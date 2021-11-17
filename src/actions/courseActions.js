@@ -6,8 +6,20 @@ export function saveCourse(course) {
   return courseApi.saveCourse(course).then((savedCourse) => {
     // Hey dispatcher, go tell all the stores that a course was just created
     dispatcher.dispatch({
-      actionType: actionTypes.CREATE_COURSE,
+      actionType: course.id
+        ? actionTypes.UDPATE_COURSE
+        : actionTypes.CREATE_COURSE,
       course: savedCourse,
+    });
+  });
+}
+
+export function loadCourses() {
+  return courseApi.getCourses().then((courses) => {
+    // Hey dispatcher, go tell all the stores that a course was just created
+    dispatcher.dispatch({
+      actionType: actionTypes.LOAD_COURSES,
+      courses: courses,
     });
   });
 }
