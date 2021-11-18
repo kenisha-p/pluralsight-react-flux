@@ -10,7 +10,7 @@ class CourseStore extends EventEmitter {
     this.on(CHANGE_EVENT, callback);
   }
 
-  removeChangeListender(callback) {
+  removeChangeListener(callback) {
     this.removeListener(CHANGE_EVENT, callback);
   }
 
@@ -22,7 +22,7 @@ class CourseStore extends EventEmitter {
     return _courses;
   }
 
-  getCoursesbySlug(slug) {
+  getCourseBySlug(slug) {
     return _courses.find((course) => course.slug === slug);
   }
 }
@@ -30,9 +30,11 @@ class CourseStore extends EventEmitter {
 const store = new CourseStore();
 
 Dispatcher.register((action) => {
-  switch (actionTypes) {
-    case actionTypes.LOAD_COURSES:
-      _courses = action.courses;
+  switch (action.actionType) {
+    case actionTypes.DELETE_COURSE:
+      _courses = _courses.filter(
+        (course) => course.id !== parseInt(action.id, 10)
+      );
       store.emitChange();
       break;
     case actionTypes.CREATE_COURSE:
@@ -45,9 +47,13 @@ Dispatcher.register((action) => {
       );
       store.emitChange();
       break;
+    case actionTypes.LOAD_COURSES:
+      _courses = action.courses;
+      store.emitChange();
+      break;
     default:
     // nothing to do here
   }
 });
 
-export default CourseStore;
+export default store;
